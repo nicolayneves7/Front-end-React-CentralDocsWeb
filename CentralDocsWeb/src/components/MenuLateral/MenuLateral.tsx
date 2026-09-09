@@ -1,6 +1,8 @@
 import "./MenuLateral.css";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/img/LogoCentralDocsNova.png";
+import logoBranca from "../../assets/img/LogoCentralDocsBranca.png";
 
 type MenuLateralProps = {
   aberto: boolean;
@@ -10,6 +12,26 @@ type MenuLateralProps = {
 function MenuLateral({ aberto, fecharMenu }: MenuLateralProps) {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [temaEscuro, setTemaEscuro] = useState(() =>
+    document.body.classList.contains("tema-escuro")
+  );
+
+  useEffect(() => {
+    const verificarTema = () => {
+      setTemaEscuro(document.body.classList.contains("tema-escuro"));
+    };
+
+    verificarTema();
+
+    const observer = new MutationObserver(verificarTema);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const usuarioSalvo = localStorage.getItem("usuario");
   const usuario = usuarioSalvo ? JSON.parse(usuarioSalvo) : null;
@@ -40,7 +62,11 @@ function MenuLateral({ aberto, fecharMenu }: MenuLateralProps) {
         <div>
           <div className="menu-topo">
             <div className="menu-logo-area">
-              <img src={logo} alt="CentralDocs" className="menu-logo" />
+              <img
+                src={temaEscuro ? logoBranca : logo}
+                alt="CentralDocs"
+                className="menu-logo"
+              />
             </div>
 
             <button

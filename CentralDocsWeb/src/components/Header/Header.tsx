@@ -1,7 +1,8 @@
 import "./Header.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/img/LogoCentralDocsNova.png";
+import logoBranca from "../../assets/img/LogoCentralDocsBranca.png";
 import MenuLateral from "../MenuLateral/MenuLateral";
 
 type HeaderProps = {
@@ -17,6 +18,25 @@ function Header({
 }: HeaderProps) {
   const [menuAberto, setMenuAberto] = useState(false);
   const [pesquisa, setPesquisa] = useState("");
+  const [temaEscuro, setTemaEscuro] = useState(() =>
+    document.body.classList.contains("tema-escuro")
+  );
+
+  useEffect(() => {
+    const verificarTema = () => {
+      setTemaEscuro(document.body.classList.contains("tema-escuro"));
+    };
+
+    verificarTema();
+
+    const observer = new MutationObserver(verificarTema);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const token = localStorage.getItem("token");
   const usuarioSalvo = localStorage.getItem("usuario");
@@ -69,7 +89,11 @@ function Header({
             )}
 
             <Link to="/" className="header-brand">
-              <img src={logo} alt="CentralDocs Logo" className="logo-img" />
+              <img
+                src={temaEscuro ? logoBranca : logo}
+                alt="CentralDocs Logo"
+                className="logo-img"
+              />
             </Link>
           </div>
 

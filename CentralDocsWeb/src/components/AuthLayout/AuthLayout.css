@@ -50,6 +50,10 @@ body {
   margin-bottom: 42px;
 }
 
+body.tema-escuro .auth-logo {
+  content: url("../../assets/img/LogoCentralDocsBranca.png");
+}
+
 .auth-image-area {
   padding: 18px;
   background: #ffffff;

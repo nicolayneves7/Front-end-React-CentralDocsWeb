@@ -31,6 +31,12 @@
   font-size: 13px;
   font-weight: 700;
   margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+.badge-seguranca:hover {
+  transform: translateY(-2px);
+  background-color: #dbe4ff;
 }
 
 .badge-seguranca .dot {
@@ -72,6 +78,18 @@
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 10px 24px rgba(66, 133, 244, 0.25);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-5px);
+  background-color: #3367d6;
+  box-shadow: 0 16px 32px rgba(66, 133, 244, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(66, 133, 244, 0.3);
 }
 
 .btn-secondary {
@@ -86,6 +104,28 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-5px);
+  background-color: #f8fafc;
+  border-color: #4285f4;
+  color: #4285f4;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.1);
+}
+
+.btn-secondary .icon-circle {
+  transition: transform 0.3s ease;
+}
+
+.btn-secondary:hover .icon-circle {
+  transform: scale(1.2) rotate(15deg);
+}
+
+.btn-secondary:active {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
 }
 
 .hero-right {
@@ -100,6 +140,13 @@
   border-radius: 28px;
   overflow: hidden;
   box-shadow: 18px 18px 0 rgba(0, 0, 0, 0.22);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  cursor: pointer;
+}
+
+.card-visual:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 24px 24px 0 rgba(0, 0, 0, 0.28);
 }
 
 .robot-image {
@@ -107,6 +154,11 @@
   height: 100%;
   object-position: center;
   display: block;
+  transition: transform 0.35s ease;
+}
+
+.card-visual:hover .robot-image {
+  transform: scale(1.06);
 }
 
 /* =========================
@@ -144,6 +196,8 @@ body.tema-escuro .btn-primary {
 
 body.tema-escuro .btn-primary:hover {
   background-color: #2563eb;
+  transform: translateY(-5px);
+  box-shadow: 0 16px 32px rgba(37, 99, 235, 0.45);
 }
 
 body.tema-escuro .btn-secondary {
@@ -154,11 +208,19 @@ body.tema-escuro .btn-secondary {
 
 body.tema-escuro .btn-secondary:hover {
   background-color: #1e293b;
-  border-color: #475569;
+  border-color: #60a5fa;
+  color: #60a5fa;
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.4);
 }
 
 body.tema-escuro .card-visual {
   box-shadow: 18px 18px 0 rgba(59, 130, 246, 0.18);
+}
+
+body.tema-escuro .card-visual:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 24px 24px 0 rgba(59, 130, 246, 0.28);
 }
 
 @media (max-width: 1024px) {

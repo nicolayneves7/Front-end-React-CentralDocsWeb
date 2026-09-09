@@ -222,6 +222,10 @@ body.tema-escuro .header {
   border-bottom: 1px solid #1e293b;
 }
 
+body.tema-escuro .logo-img {
+  content: url("../../assets/img/LogoCentralDocsBranca.png");
+}
+
 body.tema-escuro .menu-btn span {
   background: #e2e8f0;
 }
