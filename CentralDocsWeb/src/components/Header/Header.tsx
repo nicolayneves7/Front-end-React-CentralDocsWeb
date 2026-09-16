@@ -1,6 +1,6 @@
 import "./Header.css";
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/img/LogoCentralDocsNova.png";
 import logoBranca from "../../assets/img/LogoCentralDocsBranca.png";
 import MenuLateral from "../MenuLateral/MenuLateral";
@@ -11,16 +11,41 @@ type HeaderProps = {
   exibirBusca?: boolean;
 };
 
+type PaginaSearch = {
+  titulo: string;
+  rota: string;
+  categoria: string;
+  palavrasChave: string[];
+};
+
+const PAGINAS_SISTEMA: PaginaSearch[] = [
+  { titulo: "Início / Home", rota: "/", categoria: "Navegação", palavrasChave: ["inicio", "home", "principal", "centraldocs"] },
+  { titulo: "Meus Documentos", rota: "/documentos", categoria: "Documentos", palavrasChave: ["documentos", "documento", "arquivos", "pastas", "meus documentos", "lista"] },
+  { titulo: "Cadastrar Novo Documento", rota: "/documentos/novo", categoria: "Documentos", palavrasChave: ["cadastrar", "novo", "adicionar", "enviar", "upload", "criar documento"] },
+  { titulo: "Demonstração Mobile", rota: "/demonstracao", categoria: "Recursos", palavrasChave: ["demonstracao", "mobile", "app", "tour", "recursos", "celular"] },
+  { titulo: "Sobre Nós / Institucional", rota: "/institucional", categoria: "Empresa", palavrasChave: ["sobre", "institucional", "empresa", "nos", "quem somos"] },
+  { titulo: "Perfil do Usuário", rota: "/perfil", categoria: "Conta", palavrasChave: ["perfil", "conta", "usuario", "meus dados", "foto"] },
+  { titulo: "Acessibilidade", rota: "/acessibilidade", categoria: "Configurações", palavrasChave: ["acessibilidade", "tema", "daltónico", "contraste", "cores", "protanopia", "tritanopia", "escuro"] },
+  { titulo: "Perguntas Frequentes / FAQ", rota: "/perguntas-frequentes", categoria: "Ajuda", palavrasChave: ["faq", "perguntas", "frequentes", "duvidas", "ajuda", "suporte"] },
+  { titulo: "Configurações", rota: "/configuracoes", categoria: "Configurações", palavrasChave: ["configuracoes", "configuracao", "ajustes", "preferencias"] },
+  { titulo: "Login / Entrar", rota: "/login", categoria: "Conta", palavrasChave: ["login", "entrar", "acesso"] },
+  { titulo: "Cadastro / Criar Conta", rota: "/cadastro", categoria: "Conta", palavrasChave: ["cadastro", "registrar", "criar conta"] },
+  { titulo: "Recuperar Senha", rota: "/esqueceu-senha", categoria: "Conta", palavrasChave: ["esqueceu", "senha", "recuperar", "redefinir"] },
+];
+
 function Header({
   exibirMenuLateral = true,
   exibirNav = true,
   exibirBusca = true,
 }: HeaderProps) {
+  const navigate = useNavigate();
   const [menuAberto, setMenuAberto] = useState(false);
   const [pesquisa, setPesquisa] = useState("");
+  const [dropdownAberto, setDropdownAberto] = useState(false);
   const [temaEscuro, setTemaEscuro] = useState(() =>
     document.body.classList.contains("tema-escuro")
   );
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const verificarTema = () => {
@@ -38,23 +63,42 @@ function Header({
     return () => observer.disconnect();
   }, []);
 
+  // Fechar dropdown ao clicar fora
+  useEffect(() => {
+    const handleClickFora = (event: MouseEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target as Node)
+      ) {
+        setDropdownAberto(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickFora);
+    return () => document.removeEventListener("mousedown", handleClickFora);
+  }, []);
+
   const token = localStorage.getItem("token");
   const usuarioSalvo = localStorage.getItem("usuario");
-
-  // Tratamento seguro para o JSON do localStorage
   const usuario = usuarioSalvo ? JSON.parse(usuarioSalvo) : null;
 
-  // Se o usuário estiver logado (possui token), exibimos o menu lateral, navegação e busca
   const deveExibirMenuLateral = Boolean(token) || exibirMenuLateral;
   const deveExibirNav = Boolean(token) || exibirNav;
   const deveExibirBusca = Boolean(token) || exibirBusca;
 
-  function abrirMenu() {
-    setMenuAberto(true);
-  }
+  const resultadosBusca = pesquisa.trim()
+    ? PAGINAS_SISTEMA.filter((pag) => {
+        const termo = pesquisa.toLowerCase().trim();
+        const tituloMatch = pag.titulo.toLowerCase().includes(termo);
+        const palavraMatch = pag.palavrasChave.some((p) => p.includes(termo));
+        return tituloMatch || palavraMatch;
+      })
+    : [];
 
-  function fecharMenu() {
-    setMenuAberto(false);
+  function irParaRota(rota: string) {
+    navigate(rota);
+    setPesquisa("");
+    setDropdownAberto(false);
   }
 
   function handlePesquisar(e: React.FormEvent) {
@@ -64,7 +108,19 @@ function Header({
       return;
     }
 
-    console.log("Pesquisando por:", pesquisa);
+    if (resultadosBusca.length > 0) {
+      irParaRota(resultadosBusca[0].rota);
+    } else {
+      irParaRota("/documentos");
+    }
+  }
+
+  function abrirMenu() {
+    setMenuAberto(true);
+  }
+
+  function fecharMenu() {
+    setMenuAberto(false);
   }
 
   return (
@@ -107,26 +163,49 @@ function Header({
                 <li>
                   <Link to="/Institucional">Sobre nós</Link>
                 </li>
-
-                <li>
-                  <Link to="/recentes">Recentes</Link>
-                </li>
               </ul>
             </nav>
           )}
 
           <div className="header-acoes">
             {deveExibirBusca && (
-              <form className="pesquisa-box" onSubmit={handlePesquisar}>
-                <span className="search-icon">⌕</span>
+              <div className="pesquisa-wrapper" ref={searchContainerRef}>
+                <form className="pesquisa-box" onSubmit={handlePesquisar}>
+                  <span className="search-icon">⌕</span>
 
-                <input
-                  type="text"
-                  placeholder="Digite o que você procura..."
-                  value={pesquisa}
-                  onChange={(e) => setPesquisa(e.target.value)}
-                />
-              </form>
+                  <input
+                    type="text"
+                    placeholder="Digite o que você procura..."
+                    value={pesquisa}
+                    onChange={(e) => {
+                      setPesquisa(e.target.value);
+                      setDropdownAberto(true);
+                    }}
+                    onFocus={() => setDropdownAberto(true)}
+                  />
+                </form>
+
+                {dropdownAberto && pesquisa.trim().length > 0 && (
+                  <div className="pesquisa-dropdown">
+                    {resultadosBusca.length > 0 ? (
+                      resultadosBusca.map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="pesquisa-item-result"
+                          onClick={() => irParaRota(item.rota)}
+                        >
+                          <span className="pesquisa-item-title">{item.titulo}</span>
+                          <span className="pesquisa-item-tag">{item.categoria}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="pesquisa-item-result empty">
+                        <span className="pesquisa-item-title">Nenhuma página encontrada</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             )}
 
             {!token ? (

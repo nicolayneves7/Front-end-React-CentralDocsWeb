@@ -17,6 +17,9 @@ import Acessibilidade from "./pages/Acessibilidade/Acessibilidade";
 import PerguntasFrequentes from "./pages/PerguntasFrequentes/PerguntasFrequentes";
 import CadastrarDocumento from "./pages/CadastrarDocumento/CadastrarDocumento";
 import Configuracoes from "./pages/Configuracao/Configuracoes";
+import Demonstracao from "./pages/Demonstracao/Demonstracao";
+
+import ChatbotWeb from "./components/ChatbotWeb/ChatbotWeb";
 
 import "./index.css";
 import "./App.css";
@@ -75,6 +78,7 @@ function App() {
       <Routes>
         {/* Rotas públicas */}
         <Route path="/" element={<Home />} />
+        <Route path="/demonstracao" element={<Demonstracao />} />
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/esqueceu-senha" element={<EsqueceuSenha />} />
@@ -145,6 +149,8 @@ function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+
+      <ChatbotWeb />
     </BrowserRouter>
   );
 }

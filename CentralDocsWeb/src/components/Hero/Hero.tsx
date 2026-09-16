@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./Hero.css";
 import roboImg from "../../assets/img/ChatGPT Image 23 de abr. de 2026, 15_03_20.png";
 
@@ -22,12 +23,12 @@ function Hero() {
           </p>
 
           <div className="hero-buttons">
-            <button className="btn-primary">Baixar o app agora!</button>
+            <Link to="/demonstracao" className="btn-primary">Baixar o app agora!</Link>
 
-            <button className="btn-secondary">
+            <Link to="/demonstracao" className="btn-secondary">
               <span className="icon-circle">⦿</span>
               Ver demonstração
-            </button>
+            </Link>
           </div>
         </div>
 
