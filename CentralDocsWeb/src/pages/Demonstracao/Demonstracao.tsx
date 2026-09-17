@@ -52,7 +52,7 @@ const FAQ_DATA: FaqItem[] = [
 ];
 
 export default function Demonstracao() {
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   // Scroll reveal observer effect
   useEffect(() => {
